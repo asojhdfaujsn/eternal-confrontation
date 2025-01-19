@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Confrontation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #log {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: #282828;
+            height: 200px;
+            overflow-y: scroll;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Eternal Confrontation</h1>
+    <p id="status"></p>
+    <button onclick="choosePath(1)">Take the left path</button>
+    <button onclick="choosePath(2)">Take the right path</button>
+    <div id="log"></div>
+
+    <script>
+        let player = {
+            name: "Hero",
+            health: 100,
+            attack: 20,
+            defense: 10,
+            mana: 50
+        };
+
+        function updateStatus() {
+            document.getElementById("status").innerText = `
+                ${player.name} | Health: ${player.health} | Attack: ${player.attack} | Defense: ${player.defense} | Mana: ${player.mana}
+            `;
+        }
+
+        function log(message) {
+            const logDiv = document.getElementById("log");
+            logDiv.innerHTML += `<p>${message}</p>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function battle() {
+            let enemy = { name: "Goblin", health: 30, attack: 10, defense: 5 };
+            log(`A wild ${enemy.name} appears!`);
+
+            while (player.health > 0 && enemy.health > 0) {
+                // Player attacks
+                let playerDamage = Math.max(player.attack - enemy.defense / 2, 0);
+                enemy.health -= playerDamage;
+                log(`${player.name} attacks for ${playerDamage} damage. Enemy health: ${enemy.health}`);
+
+                if (enemy.health <= 0) {
+                    log(`${enemy.name} was defeated!`);
+                    return;
+                }
+
+                // Enemy attacks
+                let enemyDamage = Math.max(enemy.attack - player.defense / 2, 0);
+                player.health -= enemyDamage;
+                log(`${enemy.name} attacks for ${enemyDamage} damage. Player health: ${player.health}`);
+
+                if (player.health <= 0) {
+                    log("You were defeated! Game Over.");
+                    return;
+                }
+            }
+        }
+
+        function choosePath(choice) {
+            if (choice === 1) {
+                log("You chose the safe path. You recover some health.");
+                player.health += 10;
+            } else if (choice === 2) {
+                log("You chose the risky path. An enemy appears!");
+                battle();
+            } else {
+                log("Invalid choice. You stumble and lose some health.");
+                player.health -= 5;
+            }
+            updateStatus();
+        }
+
+        updateStatus();
+    </script>
+</body>
+</html>
